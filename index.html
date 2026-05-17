@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>和精油診断</title>
+
+<style>
+
+body{
+  margin:0;
+  font-family:"Hiragino Mincho ProN", serif;
+  background:
+  linear-gradient(rgba(10,10,20,0.6), rgba(10,10,20,0.8)),
+  url("moon.jpg");
+
+background-size:cover;
+background:
+  linear-gradient(rgba(10,10,20,0.6), rgba(10,10,20,0.8)),
+  url("moon.jpg");
+
+background-size:cover;
+background-position:55% center;
+background-attachment:fixed;
+  color:#f3efe8;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  padding:20px;
+  letter-spacing:0.05em;
+}
+
+.card{
+  width:90%;
+  max-width:400px;
+  background:rgba(10,15,30,0.58);
+  backdrop-filter:blur(12px);
+  padding:56px 48px;
+  border-radius:28px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.3);
+  text-align:center;
+  border:1px solid rgba(255,255,255,0.06);
+}
+
+h1{
+  font-size:28px;
+  letter-spacing:0.08em;
+  font-weight:normal;
+letter-spacing:0.12em;
+line-height:1.6;
+}
+
+.moon{
+  font-size:56px;
+  margin-bottom:10px;
+}
+
+.question{
+  text-align:center;
+  margin-top:28px;
+}
+
+.question p{
+  margin-bottom:10px;
+  font-weight:bold;
+}
+
+label{
+  display:block;
+  margin:8px 0;
+}
+
+button{
+  background:#b79f6b;
+  color:white;
+  border:none;
+  padding:14px 24px;
+  border-radius:999px;
+  cursor:pointer;
+  font-size:16px;
+  margin-top:30px;
+}
+
+#result{
+  margin-top:30px;
+  padding-top:20px;
+  border-top:1px solid rgba(255,255,255,0.2);
+  line-height:1.9;
+  font-size:15px;
+}
+#result h2{
+  font-size:24px;
+  margin-bottom:20px;
+  letter-spacing:0.08em;
+}
+
+#result h3{
+  line-height:1.8;
+  margin:24px 0;
+  font-weight:normal;
+}
+@media (max-width:600px){
+
+.card{
+  width:88%;
+  padding:40px 24px;
+  border-radius:24px;
+}
+
+h1{
+  font-size:24px;
+}
+
+.moon{
+  font-size:48px;
+}
+
+button{
+  width:100%;
+  padding:16px;
+}
+
+label{
+  margin:18px 0;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="moon">🌙</div>
+
+<h1>和精油診断</h1>
+
+<p>
+今のあなたに寄り添う<br>
+和精油を見つけます
+</p>
+
+<div class="question">
+<p>① 今の気分は？</p>
+
+<label>
+<input type="radio" name="q1" value="tired">
+疲れている
+</label>
+
+<label>
+<input type="radio" name="q1" value="calm">
+落ち着きたい
+</label>
+
+<label>
+<input type="radio" name="q1" value="refresh">
+すっきりしたい
+</label>
+</div>
+
+<div class="question">
+<p>② 好きな時間は？</p>
+
+<label>
+<input type="radio" name="q2" value="morning">
+朝
+</label>
+
+<label>
+<input type="radio" name="q2" value="night">
+夜
+</label>
+
+<label>
+<input type="radio" name="q2" value="any">
+どちらでもない
+</label>
+</div>
+
+<div class="question">
+<p>③ 今の感情は？</p>
+
+<label>
+<input type="radio" name="q3" value="anxiety">
+不安
+</label>
+
+<label>
+<input type="radio" name="q3" value="sleepy">
+眠い
+</label>
+
+<label>
+<input type="radio" name="q3" value="blank">
+何も考えたくない
+</label>
+</div>
+
+<div class="question">
+<p>④ 惹かれる季節は？</p>
+
+<label>
+<input type="radio" name="q4" value="spring">
+春
+</label>
+
+<label>
+<input type="radio" name="q4" value="summer">
+夏
+</label>
+
+<label>
+<input type="radio" name="q4" value="autumn">
+秋
+</label>
+
+<label>
+<input type="radio" name="q4" value="winter">
+冬
+</label>
+</div>
+
+<button onclick="diagnose()">
+診断する
+</button>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+
+const oils = {
+
+  hinoki: {
+    name:"ヒノキ",
+    message:"深い森の静けさで、心を整えます。"
+  },
+
+  yuzu: {
+    name:"柚子",
+    message:"やさしい光のように、気持ちを明るく。"
+  },
+
+  kuromoji: {
+    name:"黒文字",
+    message:"緊張をゆるめ、呼吸を深く整えます。"
+  },
+
+  sugi: {
+    name:"杉",
+    message:"地に足をつけて安心感を。"
+  },
+
+  getto: {
+    name:"月桃",
+    message:"内側の疲れを静かに流します。"
+  },
+
+  orange: {
+    name:"橙",
+    message:"停滞した気持ちに、やさしい循環を。"
+  },
+
+  hiba_aomori: {
+    name:"青森ヒバ",
+    message:"森の浄化力で、空気ごとリセット。"
+  },
+
+  koyamaki: {
+    name:"高野槇",
+    message:"静かな祈りのように、心を整える時間。"
+  },
+
+  hacca: {
+    name:"和薄荷",
+    message:"思考をクリアに、軽やかに。"
+  },
+
+  iyokan: {
+    name:"伊予柑",
+    message:"やさしい甘さで、緊張をほどく。"
+  },
+
+  buntan: {
+    name:"文旦",
+    message:"重たい気分を軽く持ち上げる。"
+  },
+
+  yuzuhana: {
+    name:"柚子花",
+    message:"繊細な感情をそっと包み込む。"
+  },
+
+  kisohinoki: {
+    name:"木曽ヒノキ",
+    message:"深い安定と、静かな強さを。"
+  },
+
+  notohiba: {
+    name:"能登ヒバ",
+    message:"守られているような安心感を。"
+  },
+
+  akamatsu: {
+    name:"赤松",
+    message:"エネルギーを内側から立て直す。"
+  },
+
+  yomogi: {
+    name:"よもぎ",
+    message:"滞りを流し、浄化と再生を。"
+  },
+
+  shiso: {
+    name:"紫蘇",
+    message:"心の揺れをやさしく整える。"
+  },
+
+  ginger: {
+    name:"生姜",
+    message:"冷えた心に、あたたかさを。"
+  },
+
+  sasanqua: {
+    name:"山茶花",
+    message:"静かな美しさと、自己回復力を。"
+  },
+
+  ume: {
+    name:"梅",
+    message:"強さとやわらかさのバランスを整える。"
+  }
+};
+
+function diagnose(){
+
+  const q1 =
+    document.querySelector('input[name="q1"]:checked')?.value;
+
+  const q2 =
+    document.querySelector('input[name="q2"]:checked')?.value;
+
+  const q3 =
+    document.querySelector('input[name="q3"]:checked')?.value;
+
+  const q4 =
+    document.querySelector('input[name="q4"]:checked')?.value;
+
+  if(!q1 || !q2 || !q3 || !q4){
+
+    document.getElementById("result").innerHTML =
+      "すべての質問に答えてくださいね。";
+
+    return;
+  }
+
+  let type = "";
+
+  if(q1 === "tired"){
+    type = "forest";
+  }
+
+  else if(q1 === "calm" && q2 === "night"){
+    type = "moon";
+  }
+
+  else if(q1 === "refresh"){
+    type = "light";
+  }
+
+  else if(q3 === "sleepy"){
+    type = "fire";
+  }
+
+  else if(q4 === "winter"){
+    type = "fire";
+  }
+
+  else if(q4 === "autumn"){
+    type = "moon";
+  }
+
+  else{
+    type = "light";
+  }
+
+  const results = {
+
+    forest: [
+      oils.hinoki,
+      oils.kisohinoki,
+      oils.hiba_aomori,
+      oils.notohiba,
+      oils.sugi
+    ],
+
+    moon: [
+      oils.kuromoji,
+      oils.getto,
+      oils.shiso,
+      oils.sasanqua,
+      oils.yuzuhana
+    ],
+
+    light: [
+      oils.yuzu,
+      oils.iyokan,
+      oils.buntan,
+      oils.orange,
+      oils.hacca
+    ],
+
+    fire: [
+      oils.ginger,
+      oils.akamatsu,
+      oils.ume
+    ]
+  };
+
+  const selected =
+    results[type][
+      Math.floor(Math.random() * results[type].length)
+    ];
+
+  let typeName = "";
+
+  if(type === "forest"){
+    typeName = "森の癒しタイプ";
+  }
+
+  if(type === "moon"){
+    typeName = "月の静寂タイプ";
+  }
+
+  if(type === "light"){
+    typeName = "光の巡りタイプ";
+  }
+
+  if(type === "fire"){
+    typeName = "火の再生タイプ";
+  }
+
+  let scene = "";
+
+  if(type === "forest"){
+    scene =
+    "静かな森の空気が、心のざわめきをゆっくり落ち着かせます。";
+  }
+
+  if(type === "moon"){
+    scene =
+    "月明かりのような静けさが、内側の感情をやさしく包み込みます。";
+  }
+
+  if(type === "light"){
+    scene =
+    "やわらかな光が差し込むように、気持ちを軽やかに整えます。";
+  }
+
+  if(type === "fire"){
+    scene =
+    "冷えていた心の奥に、小さな灯りをともしていきます。";
+  }
+
+  document.getElementById("result").innerHTML = `
+
+    <h2>${typeName}</h2>
+
+    <p>${scene}</p>
+
+    <h3>
+      あなたに寄り添う和精油は<br>
+      「${selected.name}」
+    </h3>
+
+    <p>${selected.message}</p>
+
+  `;
+}
+
+</script>
+
+</body>
+</html>
